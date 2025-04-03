@@ -1,0 +1,6 @@
+// 全局scss函数
+
+@mixin wh($w, $h) {
+  width: $w + px;
+  height: $h + px;
+}
