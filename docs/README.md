@@ -1412,7 +1412,7 @@ export default function useProxy(list: ProxyList = []) {
       }
     })
   }
-
+  
   export default useVueDevTools
   ```
 
@@ -1696,3 +1696,93 @@ pnpm install -D commitizen cz-vinyl
 使用 `npm run cz` 运行：
 
 ![image-20250316110304316](https://cdn.jsdelivr.net/gh/LetengZzz/img@main/img/202504022111050.png)
+
+## Element Plus
+
+引入：
+
+```
+pnpm install element-plus
+```
+
+调整自动导入配置：
+
+> autoImport.ts
+
+```typescript
+// 此插件用于自动导入API和组件
+// 可以减少手动import语句，提高开发效率，并提供类型提示
+import AutoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+/**
+ * 配置自动导入功能
+ * 支持Vue、Vue Router、Pinia等框架API的自动导入
+ * 支持Ant Design Vue组件的自动导入
+ * 自动导入src/api和src/utils目录下的函数
+ * @returns Vite插件配置
+ */
+const useAutoImport = () => {
+  return AutoImport({
+    resolvers: [
+      ElementPlusResolver({
+        importStyle: 'sass', // 使用Sass样式
+      }), // 自动导入Element Plus组件
+    ],
+    imports: [
+      'vue', // 自动导入Vue核心API
+      'vue-router', // 自动导入Vue Router API
+      'pinia', // 自动导入Pinia API
+    //   '@vueuse/core', // 自动导入VueUse工具函数
+    //   {
+    //     'vue-request': ['useRequest', 'usePagination'], // 自动导入vue-request的特定函数
+    //     // 'dayjs': [['default', 'dayjs']],
+    //   },
+    ],
+    dts: './types/auto-imports.d.ts', // 生成类型声明文件的路径
+    dirs: ['src/api/**/*.ts', 'src/utils/**/*.ts'], // 自动导入项目中自定义的API和工具函数
+  })
+}
+
+export default useAutoImport
+```
+
+调整插件配置：
+
+```typescript
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+
+/**
+ * 自动注册Vue组件的插件配置
+ * 该插件可以自动导入组件，无需手动import
+ * 提高开发效率并减少样板代码
+ */
+const useComponents = () => {
+  return Components({
+    resolvers: [
+      // Element Plus组件库解析器
+      ElementPlusResolver({
+        importStyle: 'sass', // 使用Sass样式
+      }),
+    ],
+    dts: './types/components.d.ts', // 生成组件类型声明文件的路径
+  })
+}
+
+export default useComponents
+```
+
+使用：
+
+```vue
+<div class="mb-4">
+  <el-button>Default</el-button>
+  <el-button type="primary">Primary</el-button>
+  <el-button type="success">Success</el-button>
+  <el-button type="info">Info</el-button>
+  <el-button type="warning">Warning</el-button>
+  <el-button type="danger">Danger</el-button>
+</div>
+```
+
